@@ -1,0 +1,54 @@
+#include <cassert>
+#include <cstdint>
+
+#include "./include/idx_parser.h"
+
+uint32_t swap_endian(uint32_t val) {
+    val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0x00FF00FF);
+    return (val << 16) | (val >> 16);
+}
+
+class IdxParser {
+public:
+  long long element_size = 1;
+  long long length;
+  long long position;
+  std::vector<int> dims;
+  IdxParser(const std::string& file_path) {
+    position = 0;
+    file.open(file_path, std::ios::binary);
+    assert(file.is_open());
+    assert(read<uint16_t>() == 0);
+    assert(read<uint8_t>() == 8);
+    int dims_length = read<uint8_t>();
+    length = swap_endian(read<uint32_t>());
+    dims.push_back(length);
+    for (int dim = 1; dim < dims_length; dim++) {
+      dims.push_back(swap_endian(read<uint32_t>()));
+      element_size *= dims[dim];
+    }
+    position = 0;
+  };
+  ~IdxParser() {
+    file.close();
+  }
+
+  template <typename T>
+  T read() {
+    assert(position < length);
+    T res;
+    file.read(reinterpret_cast<char*>(&res), sizeof(res));
+    position += (sizeof(res)/element_size);
+    return res;
+  }
+
+  template <typename T>
+  void read(std::vector<T> &v, int count) {
+    assert(position < length);
+    v.resize(count);
+    file.read(reinterpret_cast<char*>(v.data()), count * sizeof(T)); 
+    position += (count * sizeof(T))/element_size;
+  };
+private:
+  std::ifstream file;
+};
