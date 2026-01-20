@@ -12,14 +12,15 @@ int main() {
   NeuralNetwork network(model_parser.dims);
   network.load_params(&model_parser);
 
-  std::vector<float> v(data_parser.element_size);
+  int batch_size = 16;
+  std::vector<float> v(data_parser.element_size * batch_size);
 
-  for (int i = 0; i < 100; i++) {
-
-    data_parser.read(v, v.size());
+  data_parser.read(v, v.size());
+  auto res = network.batched_forward(v, batch_size);
+  for (int k = 0; k < batch_size; k++) {
     for (int i = 0; i < 28; i++) {
       for (int j = 0; j < 28; j++) {
-        if (v[i * 28 + j])
+        if (v[k * data_parser.element_size + i * 28 + j])
           std::cout << 1;
         else
           std::cout << 0;
@@ -27,13 +28,12 @@ int main() {
       std::cout << std::endl;
     }
 
-    auto res = network.forward(v);
     float m = 0;
     int idx = 0;
     for (int i = 0; i < 10; i++) {
-      std::cout << res[i] << ' ';
-      if (m < res[i]) {
-        m = res[i];
+      std::cout << res[i + 10 * k] << ' ';
+      if (m < res[i + 10 * k]) {
+        m = res[i + 10 * k];
         idx = i;
       }
     }

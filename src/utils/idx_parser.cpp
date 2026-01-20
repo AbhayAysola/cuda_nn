@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstdint>
 
 #include "./include/idx_parser.h"
 
@@ -42,3 +43,10 @@ template <typename T> T IdxParser::read() {
     v[i] = (v_tmp[i])/255.0f;
   position += (count * sizeof(uint8_t)) / element_size;
 };
+
+void IdxParser::read(std::vector<uint8_t> &v, int count) {
+  assert(position < length);
+  v.resize(count);
+  file.read(reinterpret_cast<char *>(v.data()), count * sizeof(uint8_t));
+  position += (count * sizeof(uint8_t)) / element_size;
+}

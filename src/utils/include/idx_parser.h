@@ -18,6 +18,8 @@ public:
 
   void read(std::vector<float> &v, int count);
 
+  void read(std::vector<uint8_t> &v, int count);
+
 private:
   std::ifstream file;
 };

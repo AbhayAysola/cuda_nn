@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 
 import torch
+from torch import nn
 from torch.utils.data import DataLoader
 
 from dataset import MNISTDataset
@@ -11,7 +12,7 @@ CACHE_DIR = "./.cache"
 
 batch_size = 64
 
-test_dataset = MNISTDataset("./data/t10k-labels.idx1-ubyte", "./data/t10k-images.idx3-ubyte")
+test_dataset = MNISTDataset("./data/train-labels.idx1-ubyte", "./data/train-images.idx3-ubyte")
 test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
 
 for X, y in test_dataloader:
@@ -19,14 +20,12 @@ for X, y in test_dataloader:
     print(f"Shape of y: {y.shape} {y.dtype}")
     break
 
-device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
-print(f"Using {device} device")
 
-model = NeuralNetwork().to(device)
+model = NeuralNetwork()
 print(model)
 
 os.makedirs(CACHE_DIR, exist_ok=True)
-model = NeuralNetwork().to(device)
+model = NeuralNetwork()
 model.load_state_dict(torch.load(CACHE_DIR + "/model.pth", weights_only=True))
 
 model.eval()
@@ -34,27 +33,12 @@ x, y = test_dataset[0][0], test_dataset[0][1]
 plt.imshow(x.squeeze(), cmap="gray")
 plt.show()
 
-# Dictionary to store results
-activations = {}
+loss_fn = nn.CrossEntropyLoss()
+pred = model(x)
+print(pred)
+target = torch.tensor([y], dtype=torch.long)
 
-def hook_fn(module, input, output):
-    # Find the name of the module to use as a dictionary key
-    name = str(module)
-    activations[name] = output.detach().cpu().numpy()
-
-# Attach hooks to every Linear layer found in the model
-for name, module in model.named_modules():
-    if isinstance(module, torch.nn.Linear):
-        module.register_forward_hook(hook_fn)
-
-
-with torch.no_grad():
-    x = x.to(device)
-    pred = model(x)
-    print(pred)
-
-
-# View your results
-for layer_name, values in activations.items():
-    print(f"Layer: {layer_name} | First 5 values: {values[0][:5]}")
+print(pred.shape, target.shape)
+loss = loss_fn(pred, target)
+print(f"Loss: {loss.item():.4f}")
 

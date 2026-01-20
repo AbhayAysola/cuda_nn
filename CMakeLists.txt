@@ -20,6 +20,16 @@ add_executable(cuda_nn
 
 target_include_directories(cuda_nn PUBLIC "./src/utils/include/")
 
+add_executable(train
+  src/train.cpp
+  src/utils/idx_parser.cpp
+  src/utils/model_parser.cpp
+  src/utils/model.cu
+)
+
+target_include_directories(train PUBLIC "./src/utils/include/")
+
+
 # Enable fast math for performance and optimization level O3
 add_compile_options("$<$<COMPILE_LANGUAGE:CUDA>:--use_fast_math;-O3>")
 
