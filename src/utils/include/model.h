@@ -1,6 +1,7 @@
 #ifndef __MODEL_H__
 #define __MODEL_H__
 #include "./model_parser.h"
+#include <cstdint>
 #include <vector>
 
 struct Layer {
@@ -22,13 +23,13 @@ public:
 
   void load_params(ModelParser *parser);
 
+  void initialize_params();
+
   std::vector<float> forward(std::vector<float> &input);
 
   std::vector<float> batched_forward(std::vector<float> &input, int batch_size);
 
-  std::vector<float> gradient_descent(std::vector<float> &input,
-                                      int batch_size);
-
+  void gradient_descent(std::vector<float> &input, std::vector<uint8_t> &labels, int batch_size, int num_epochs);
 
   ~NeuralNetwork();
 };
