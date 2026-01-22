@@ -46,12 +46,13 @@ cmake --build ./build
 ```
 ---
 
-# Features
+# Features TODO
 * add alternate hardware support - amd, intel, etc.
 * flexible network configuration
 * alternate activation functions and loss functions
 * autograd support
 * optimized kernels
+* add opencv image processing support so I can actually run the model
 
 # References
 [MNIST Dataset](https://github.com/cvdfoundation/mnist)
