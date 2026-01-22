@@ -25,7 +25,6 @@ IdxParser::IdxParser(const std::string &file_path) {
 };
 IdxParser::~IdxParser() { file.close(); }
 
-
 template <typename T> T IdxParser::read() {
   assert(position < length);
   T res;
@@ -34,13 +33,13 @@ template <typename T> T IdxParser::read() {
   return res;
 }
 
- void IdxParser::read(std::vector<float> &v, int count) {
+void IdxParser::read(std::vector<float> &v, int count) {
   assert(position < length);
   v.resize(count);
   std::vector<uint8_t> v_tmp(count);
   file.read(reinterpret_cast<char *>(v_tmp.data()), count * sizeof(uint8_t));
   for (int i = 0; i < count; i++)
-    v[i] = (v_tmp[i])/255.0f;
+    v[i] = (v_tmp[i]) / 255.0f;
   position += (count * sizeof(uint8_t)) / element_size;
 };
 

@@ -31,6 +31,8 @@ public:
 
   void gradient_descent(std::vector<float> &input, std::vector<uint8_t> &labels, int batch_size, int num_epochs);
 
+  void save_params(std::string file_path);
+
   ~NeuralNetwork();
 };
 #endif

@@ -1,9 +1,13 @@
 #include "./include/model.h"
 #include <cassert>
 #include <cmath>
+#include <fstream>
+#include <ios>
 #include <iostream>
 #include <ostream>
 #include <random>
+#include <string>
+#include <vector>
 
 __device__ __host__ int cdiv(int a, int b) { return (a + b - 1) / b; }
 
@@ -124,6 +128,27 @@ void NeuralNetwork::load_params(ModelParser *parser) {
     cudaMemcpy(layer.weights_d, params.data(), layer.input_size * layer.output_size * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(layer.biases_d, &params.data()[layer.input_size * layer.output_size], layer.output_size * sizeof(float), cudaMemcpyHostToDevice);
   }
+}
+
+void NeuralNetwork::save_params(std::string file_path) {
+  std::ofstream file(file_path, std::ios::binary);
+  assert(file.is_open());
+  int size = layers.size();
+  file.write(reinterpret_cast<const char *>(&size), sizeof(uint32_t));
+  for (Layer layer : layers) {
+    file.write(reinterpret_cast<const char *>(&layer.output_size), sizeof(uint16_t));
+    file.write(reinterpret_cast<const char *>(&layer.input_size), sizeof(uint16_t));
+  }
+  for (Layer layer : layers) {
+    std::vector<float> weights(layer.output_size * layer.input_size);
+    std::vector<float> biases(layer.output_size);
+    cudaMemcpy(weights.data(), layer.weights_d, layer.output_size * layer.input_size * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(biases.data(), layer.biases_d, layer.output_size * sizeof(float), cudaMemcpyDeviceToHost);
+    file.write(reinterpret_cast<char *>(weights.data()), layer.input_size * layer.output_size * sizeof(float));
+    file.write(reinterpret_cast<char *>(biases.data()), layer.output_size * sizeof(float));
+  }
+  file.flush();
+  file.close();
 }
 
 void NeuralNetwork::initialize_params() {

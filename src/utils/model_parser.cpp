@@ -16,6 +16,7 @@ ModelParser::ModelParser(const std::string &file_path) {
   }
   position = 0;
 };
+
 ModelParser::~ModelParser() { file.close(); }
 
 template <typename T> T ModelParser::read() {
@@ -29,11 +30,9 @@ std::vector<float> ModelParser::read(int layer) {
   assert(position < length);
   int rows = dims[layer].first;
   int cols = dims[layer].second;
-  
-  std::vector<float> params(rows * (cols + 1));
-  file.read(reinterpret_cast<char *>(params.data()),
-            rows * (cols + 1) * sizeof(float));
 
+  std::vector<float> params(rows * (cols + 1));
+  file.read(reinterpret_cast<char *>(params.data()), rows * (cols + 1) * sizeof(float));
 
   position += (rows * (cols + 1) * sizeof(float));
   return params;
