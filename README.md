@@ -20,6 +20,7 @@ Before building, ensure you have the following installed:
 * **CUDA Toolkit:** [Installation Guide](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html)
 * **C++ Compiler:** (e.g., GCC, Clang, or MSVC)
 * **CMake:** Version 3.10 or higher
+
 PS: You'll also need an nvidia gpu is that wasn't obvious by now :)
 
 ---
@@ -43,6 +44,7 @@ cmake --build ./build
 #inference
 ./build/cuda_nn
 ```
+---
 
 # Features
 * add alternate hardware support - amd, intel, etc.
