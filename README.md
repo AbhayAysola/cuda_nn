@@ -21,7 +21,7 @@ Before building, ensure you have the following installed:
 * **C++ Compiler:** (e.g., GCC, Clang, or MSVC)
 * **CMake:** Version 3.10 or higher
 
-PS: You'll also need an nvidia gpu is that wasn't obvious by now :)
+PS: You'll also need an nvidia gpu if that wasn't obvious by now :)
 
 ---
 
