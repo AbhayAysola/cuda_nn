@@ -60,3 +60,5 @@ cmake --build ./build
 [Python Reference Implementation](https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html)
 
 [Backpropagation 3b1b](https://www.youtube.com/watch?v=Ilg3gGewQ5U)
+
+Note: I used AI for the Cmake configuration
