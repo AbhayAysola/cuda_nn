@@ -1,7 +1,6 @@
 #include "./utils/include/idx_parser.h"
 #include "./utils/include/model.h"
-#include "./utils/include/model_parser.h"
-#include <iostream>
+
 #include <utility>
 
 int main() {
@@ -9,16 +8,10 @@ int main() {
   const std::string DATA_DIR = "./data";
   IdxParser images_parser(DATA_DIR + "/train-images.idx3-ubyte");
   IdxParser labels_parser(DATA_DIR + "/train-labels.idx1-ubyte");
-  ModelParser model_parser(CACHE_DIR + "/params_cpp.bin");
 
-  NeuralNetwork network(model_parser.dims);
-  // for (auto dim : model_parser.dims)
-  //   std::cout << dim.first << '\n';
-  network.load_params(&model_parser);
-
-  // std::vector<std::pair<int, int>> dims = {std::make_pair(512, 28 * 28), std::make_pair(512, 512), std::make_pair(10, 512)};
-  // NeuralNetwork network(dims);
-  // network.initialize_params();
+  std::vector<std::pair<int, int>> dims = {std::make_pair(512, 28 * 28), std::make_pair(512, 512), std::make_pair(10, 512)};
+  NeuralNetwork network(dims);
+  network.initialize_params();
 
   int batch_size = 64;
   int num_batches = 10;

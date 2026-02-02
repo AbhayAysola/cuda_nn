@@ -39,6 +39,9 @@ cmake --build ./build
 
 # Usage
 ```bash
+# create cache directory
+mkdir .cache
+
 # training
 ./build/train
 #inference
