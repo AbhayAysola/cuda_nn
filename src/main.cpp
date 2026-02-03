@@ -13,7 +13,7 @@ int main() {
   NeuralNetwork network(model_parser.dims);
   network.load_params(&model_parser);
 
-  int batch_size = 64;
+  int batch_size = 64*2;
   std::vector<float> images(images_parser.element_size * batch_size);
   std::vector<uint8_t> labels(labels_parser.element_size * batch_size);
 

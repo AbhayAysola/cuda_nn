@@ -24,9 +24,20 @@ float cross_entropy_loss(std::vector<float> &pred, int k, int t_val) {
   for (int i = k * 10; i < (k + 1) * 10; i++)
     sum_exp += std::exp(pred[i] - max_logit);
 
-  float log_prob = (pred[10 * k + t_val] - max_logit) - std::log(sum_exp + offset);
+  float log_prob = (pred[10 * k + t_val] - max_logit) - std::log(sum_exp + offset); // -pi * log(qi)
   return -log_prob;
 }
+
+// const int SOFT_MAX_TILE_DIM = 16;
+// // input_shape batch_size X output_size
+// __global__ void soft_max(float *input, int batch_size, int output_size) {
+//   int row = blockDim.y*BlockIdx.y + threadIdx.y;
+//   int col = blockDim.x * BlockIdx.x + threadIdx.x;
+//   if (row < batch_size and col < output_size) {
+//     input[row*output_size + col] = expf(input[row*output_size + col]);
+//   }
+// }
+
 
 // forward for one input (28*28, 1)
 __global__ void forward_kernel(Layer layer, float *input, float *output, bool relu) {
@@ -279,7 +290,7 @@ void NeuralNetwork::gradient_descent(std::vector<float> &input, std::vector<uint
       epoch_loss += loss;
       float accuracy = (float)num_correct / (float)batch_size * float(100);
       epoch_accuracy += accuracy;
-      float learning_rate = 5 * 1e-4 / (loss - 2);
+      float learning_rate =  1e-3 * loss;
       // std::cout << "Batch Size: " << batch_size << std::endl;
       // std::cout << "Batch Loss: " << loss << std::endl;
       // std::cout << "Batch Accuracy: " << accuracy << "%" << std::endl;
